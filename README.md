@@ -14,5 +14,5 @@ pkill -9 redis
 make clean   
 rm -rf /data (根据需要)   
 ### 说明
-  若是两节点集群，修改redis_conf.sh中role=(master slave1 slave2)为role=(master slave1)
-  注释slave_node*.sh中，第二个slave关系
+  若是两节点集群，修改redis_conf.sh中role=(master slave1 slave2)为role=(master slave1)   
+  注释slave_node*.sh中，第二个slave关系   
