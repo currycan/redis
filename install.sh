@@ -101,7 +101,9 @@ optimizing_system(){
     sed -i '/fs.file-max/d' /etc/sysctl.conf
     sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
+    sed -i '/net.ipv4.tcp_tw_recycle/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_fin_timeout/d' /etc/sysctl.conf
+    sed -i '/net.ipv4.tcp_keepalive_time/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
     sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
@@ -114,13 +116,16 @@ optimizing_system(){
     sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
     sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-    echo "fs.file-max = 1000000
+    echo "fs.nr_open = 6553600
+fs.file-max = 6553600
 fs.inotify.max_user_instances = 8192
-net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_keepalive_time = 30
+net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_tw_recycle = 1
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.ip_local_port_range = 1024 65000
-net.ipv4.tcp_max_syn_backlog = 16384
+net.ipv4.tcp_max_syn_backlog = 262144
 net.ipv4.tcp_max_tw_buckets = 6000
 net.ipv4.route.gc_timeout = 100
 net.ipv4.tcp_syn_retries = 1
