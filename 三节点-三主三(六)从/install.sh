@@ -37,7 +37,7 @@ redis_install() {
     make install PREFIX=/usr/local/
     cp -a redis-trib.rb /usr/local/bin/
     chmod 770 /usr/local/bin/redis-trib.rb
-    ln -s redis-trib.rb /usr/local/bin/redis-trib
+    ln -sf redis-trib.rb /usr/local/bin/redis-trib
     cd ../..
     rm -rf redis-$version
     rm -rf redis-$version.tar.gz
@@ -77,33 +77,28 @@ master() {
 }
 
 slave1() {
-    echo -e " ${Green_font_prefix}配置node1节点slave, 需要node2和node3节点 IP${Font_color_suffix}"
+    echo -e " ${Green_font_prefix}配置node1节点slave到node2节点master, 需要node2节点 IP${Font_color_suffix}"
     read -p "请输入node2 IP:" node2_ip
-    read -p "请输入node3 IP:" node3_ip
-    make slave_node1 NODE2_IP=$node2_ip NODE3_IP=$node3_ip
+    make slave_node1 NODE2_IP=$node2_ip
 }
 
 slave2() {
-    echo -e " ${Green_font_prefix}配置node2节点slave, 需要node1和node3节点 IP${Font_color_suffix}"
-    read -p "请输入node1 IP:" node1_ip
+    echo -e " ${Green_font_prefix}配置node2节点slave到node3节点master, 需要node3节点 IP${Font_color_suffix}"
     read -p "请输入node3 IP:" node3_ip
-    make slave_node2 NODE1_IP=$node1_ip NODE3_IP=$node3_ip
+    make slave_node2 NODE3_IP=$node3_ip
 }
 
 slave3() {
-    echo -e " ${Green_font_prefix}配置node3节点slave, 需要node1和node2节点 IP${Font_color_suffix}"
+    echo -e " ${Green_font_prefix}配置node3节点slave到node1节点master, 需要node1节点 IP${Font_color_suffix}"
     read -p "请输入node1 IP:" node1_ip
-    read -p "请输入node2 IP:" node2_ip
-    make slave_node3 NODE1_IP=$node1_ip NODE2_IP=$node2_ip
+    make slave_node3 NODE1_IP=$node1_ip
 }
 
 optimizing_system(){
     sed -i '/fs.file-max/d' /etc/sysctl.conf
     sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
-    sed -i '/net.ipv4.tcp_tw_recycle/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_fin_timeout/d' /etc/sysctl.conf
-    sed -i '/net.ipv4.tcp_keepalive_time/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
     sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
@@ -116,16 +111,13 @@ optimizing_system(){
     sed -i '/net.ipv4.tcp_timestamps/d' /etc/sysctl.conf
     sed -i '/net.ipv4.tcp_max_orphans/d' /etc/sysctl.conf
     sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-    echo "fs.nr_open = 6553600
-fs.file-max = 6553600
+    echo "fs.file-max = 1000000
 fs.inotify.max_user_instances = 8192
-net.ipv4.tcp_fin_timeout = 30
-net.ipv4.tcp_keepalive_time = 30
 net.ipv4.tcp_syncookies = 1
-net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_fin_timeout = 30
 net.ipv4.tcp_tw_reuse = 1
 net.ipv4.ip_local_port_range = 1024 65000
-net.ipv4.tcp_max_syn_backlog = 262144
+net.ipv4.tcp_max_syn_backlog = 16384
 net.ipv4.tcp_max_tw_buckets = 6000
 net.ipv4.route.gc_timeout = 100
 net.ipv4.tcp_syn_retries = 1
