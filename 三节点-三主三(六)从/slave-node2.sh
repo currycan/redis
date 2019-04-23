@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REDIS_IP=$(ip -4 addr ls $(ip route|awk '/default/ { print $5 }') | awk '/inet / {print $2}' | cut -d"/" -f1)
+REDIS_IP=$(ip -4 addr ls $(ip route|awk '/default/ { print $5 }'|awk 'NR==1{print}') | awk '/inet / {print $2}' | cut -d"/" -f1)
 echo "NODE3_IP: $NODE3_IP"
 # slave to node3
 set -ex
